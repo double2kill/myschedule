@@ -1,0 +1,6 @@
+module.exports = {
+    auth: {
+        user: 'your user', // generated ethereal user
+        pass: 'your password' // generated ethereal password
+    }
+}
