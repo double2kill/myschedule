@@ -1,4 +1,4 @@
-const config = require('./config')
+const config = require('../../config')
 const nodemailer = require('nodemailer');
 
 let transporter = nodemailer.createTransport({

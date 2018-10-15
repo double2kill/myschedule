@@ -1,9 +1,10 @@
 var schedule = require('node-schedule');
 const logger = require('./logger')
+const weather = require('./jobs/weather')
 
 function scheduleCronstyle() {
-    schedule.scheduleJob('30 * * * * *', function () {
-        logger.info('Hello again distributed logs');
+    schedule.scheduleJob('0 0 9 * * *', function () {
+        weather()
     });
 }
 
