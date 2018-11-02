@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const mail = require('./mail');
+const { weather: Model_weather } = require('../../model')
 const {
     users
 } = require('./config')
@@ -23,14 +24,15 @@ const getWeather = async () => {
                 temp: item.od22,
                 prec: item.od26
             }))
+            .filter(item => item.hour && item.hour && item.prec)
 
         const statistics = data.reduce((result, {
             temp,
             prec
         }) => {
             return {
-                max_temp: Math.max(temp, result.max_temp),
-                min_temp: Math.min(temp, result.min_temp),
+                max_temp: Math.max(+temp, result.max_temp),
+                min_temp: Math.min(+temp, result.min_temp),
                 total_prec: +(result.total_prec + +prec).toFixed(2)
             }
         }, {
@@ -47,19 +49,36 @@ const getWeather = async () => {
         };
     });
 
+    const {
+        city,
+        data,
+        statistics
+    } = dimensions
+
     const text = `
-    最高温: ${dimensions.statistics.max_temp}℃
-    最低温: ${dimensions.statistics.min_temp}℃
-    降水量: ${dimensions.statistics.total_prec}mm
+    最高温: ${statistics.max_temp}℃
+    最低温: ${statistics.min_temp}℃
+    降水量: ${statistics.total_prec}mm
     `
+
+    const date = moment().format('MM-DD')
 
     let mailOptions = {
         from: '刘晨<379563000@qq.com>',
         // to: '刘晨<379563000@qq.com>',
-        subject: `${moment().format('MM-DD')}天气信息`,
+        subject: `${date}天气信息`,
         text: text,
         html: text
     };
+
+    await Model_weather.create({
+        date,
+        text,
+        city,
+        data,
+        statistics,
+        users
+    })
 
     // 发送users的处理
     users.map(item => {
