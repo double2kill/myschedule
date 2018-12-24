@@ -24,7 +24,7 @@ const getWeather = async () => {
                 temp: item.od22,
                 prec: item.od26
             }))
-            .filter(item => item.hour && item.hour && item.prec)
+            .filter(item => item.hour && item.temp && item.prec)
 
         const statistics = data.reduce((result, {
             temp,
