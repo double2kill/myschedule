@@ -6,6 +6,10 @@ const {
 } = require('./config')
 const moment = require('moment');
 
+const isValid = (value) => {
+    return value !== undefined && value !== null && value !== 'null'
+}
+
 const getWeather = async () => {
     const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage();
@@ -24,7 +28,7 @@ const getWeather = async () => {
                 temp: item.od22,
                 prec: item.od26
             }))
-            .filter(item => item.hour && item.temp && item.prec)
+            .filter(item => isValid(item.hour) && isValid(item.temp) && isValid(item.prec))
 
         const statistics = data.reduce((result, {
             temp,
