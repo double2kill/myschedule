@@ -6,16 +6,17 @@ const {
 } = require('./config')
 const moment = require('moment');
 
-const isValid = (value) => {
-    return value !== undefined && value !== null && value !== 'null'
-}
-
 const getWeather = async () => {
     const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage();
     await page.goto('http://www.weather.com.cn/weather/101230811.shtml');
 
     const dimensions = await page.evaluate(() => {
+        // 这里没有作用域，不能把isValid写在外面 
+        const isValid = (value) => {
+            return value !== undefined && value !== null && value !== 'null'
+        }
+
 
         const {
             od1: city,
