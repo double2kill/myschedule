@@ -12,7 +12,10 @@
     "puppeteer": "^1.9.0",
     "winston": "^3.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.11.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
