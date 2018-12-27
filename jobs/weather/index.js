@@ -1,9 +1,9 @@
-const { users } = require('./config')
+const { cityName ,users } = require('./config')
 const getWeather = require('./getWeather')
 
 const main = async (isTest) => {
   console.log(isTest)
-  const {city, data, text, statistics} = await getWeather()
+  const {city, data, text, statistics} = await getWeather(cityName)
 
   if(!isTest) {
     const { weather: Model_weather } = require('../../model')
@@ -19,11 +19,12 @@ const main = async (isTest) => {
       statistics,
       users
     })
-    
+
     await sendEmail(users, text)
   } else {
     console.log({city, data, text, statistics})
   }
+  return {city, data, text, statistics}
 }
 
 module.exports = main

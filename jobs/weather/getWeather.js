@@ -1,13 +1,12 @@
 const puppeteer = require('puppeteer')
+const searchCity = require('../../service/searchCity')
 
-
-module.exports = async () => {
+module.exports = async (cityName) => {
+  const cityInfo = await searchCity(cityName)
+  const cityId = cityInfo[0].split('~')[0]
   const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']})
-  console.log(1111)
   const page = await browser.newPage()
-  console.log(123)
-  await page.goto('http://www.weather.com.cn/weather/101230811.shtml')
-  console.log(111)
+  await page.goto(`http://www.weather.com.cn/weather/${cityId}.shtml`)
 
   const dimensions = await page.evaluate(() => {
 
@@ -58,9 +57,9 @@ module.exports = async () => {
   // await browser.close()
   // 异步关闭浏览器
   browser.close()
-  
+
   const { statistics } = dimensions
-  
+
   const text = `
   最高温: ${statistics.max_temp}℃
   最低温: ${statistics.min_temp}℃

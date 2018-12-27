@@ -2,7 +2,7 @@ var schedule = require('node-schedule')
 const logger = require('./logger')
 const weather = require('./jobs/weather')
 
-const scheduleCronstyle = (isTest) => {
+const main = (isTest) => {
   console.log('start program')
   if(isTest) {
     weather(isTest)
@@ -18,4 +18,4 @@ const scheduleCronstyle = (isTest) => {
   }
 }
 
-scheduleCronstyle()
+main(true)
