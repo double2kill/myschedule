@@ -14,8 +14,12 @@ describe('jobs', function() {
 
 describe('service', function() {
   describe('searchCity', function() {
-    it('搜索大田信息结果返回正确', async () => {
-      const [first] = await searchCity('大田')
+    it.only('搜索大田信息结果返回正确', async () => {
+      // 设置输入
+      const city = '大田'
+      // 运行
+      const [first] = await searchCity(city)
+      // 验证输出
       assert.equal(first, '101230811~fujian~大田~Datian~大田~Datian~598~366100~DT~福建')
     })
   })

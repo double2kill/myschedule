@@ -1,4 +1,4 @@
-const { cityName ,users } = require('./config')
+const { cityName, users } = require('./config')
 const getWeather = require('./getWeather')
 
 const main = async (isTest) => {
