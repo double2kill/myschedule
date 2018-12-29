@@ -1,14 +1,17 @@
-const { overloadValue } = require('./config')
-// const string = '  load average: 0.18, 0.06, 0.06'
-module.exports = function (error, stdout) {
-  if (error !== null) {
-    console.log('exec error: ' + error)
+// const process = require('process')
+const handler = require('./check')
+const { sendEmail } = require('../../service/email')
+const { users, content, subject } = require('./config')
+
+// process.exec('uptime | cut -f3-5 -d ","', (error, stdout) => {
+module.exports = (error, stdout) => {
+  if(error) {
+    console.log(error)
     return
   }
-  const value = +(stdout.split(' ')[4].split(',')[0])
-  const overload = value < overloadValue
-  return {
-    value,
-    overload
+  const {overload, value} = handler(error, stdout)
+  if(overload===false){
+    const txt = content.replace('{value}', value)
+    sendEmail(users, txt,subject)
   }
 }
