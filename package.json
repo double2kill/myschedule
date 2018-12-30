@@ -21,7 +21,7 @@
     "power-assert": "^1.6.1"
   },
   "scripts": {
-    "uptime": "node job/uptime",
+    "uptime": "node jobs/uptime",
     "test": "mocha"
   },
   "repository": {
