@@ -1,3 +1,4 @@
+const process = require('process')
 const { cityName, users } = require('./config')
 const getWeather = require('./getWeather')
 
@@ -27,4 +28,8 @@ const main = async (isTest) => {
   return {city, data, text, statistics}
 }
 
-module.exports = main
+if(process.argv[2]) {
+  main(true)
+} else {
+  main()
+}

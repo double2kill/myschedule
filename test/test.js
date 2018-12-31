@@ -4,7 +4,7 @@ const searchCity = require('../service/searchCity')
 
 describe('jobs', function() {
   describe('weather', function() {
-    it('getWeather成功返回指定的字段', async () => {
+    it.only('getWeather成功返回指定的字段', async () => {
       const data = await getWeather('大田')
       const keys = Object.keys(data)
       assert.deepStrictEqual(keys, ['od2','city','data','statistics','text'])
@@ -30,7 +30,7 @@ describe('jobs', function() {
       assert.equal(result, false)
     })
 
-    it.only('验证发邮件', async () => {
+    it('验证发邮件', async () => {
       const stdout = '  load average: 5, 0.06, 0.06'
 
       const uptime = require('../jobs/uptime')
