@@ -44,8 +44,6 @@ module.exports = async (cityName) => {
         total_prec: 0,
       })
 
-    statistics.total_prec = data[0].prec
-
     return {
       od2,
       city,

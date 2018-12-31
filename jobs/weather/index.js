@@ -7,7 +7,7 @@ const main = async (isTest) => {
   const {city, data, text, statistics} = await getWeather(cityName)
 
   if(!isTest) {
-    const { weather: Model_weather } = require('../../model')
+    const { weather: Model_weather, db } = require('../../model')
     const moment = require('moment')
     const sendEmail = require('./sendEmail')
 
@@ -20,6 +20,7 @@ const main = async (isTest) => {
       statistics,
       users
     })
+    await db.close()
 
     await sendEmail(users, text)
   } else {
