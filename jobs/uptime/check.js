@@ -1,12 +1,22 @@
 const { overloadValue } = require('./config')
-// const string = '  load average: 0.18, 0.06, 0.06'
+const R = require('ramda')
+
+const getLoadValue = R.pipe(
+  R.split('load average:'),
+  R.last,
+  R.split(','),
+  R.head,
+  R.trim()
+)
+
+
 module.exports = function (error, stdout) {
   if (error !== null) {
     console.log('exec error: ' + error)
     return
   }
-  const value = +(stdout.split(' ')[4].split(',')[0])
-  const overload = value < overloadValue
+  const value = getLoadValue(stdout)
+  const overload = +value > overloadValue
   return {
     value,
     overload
