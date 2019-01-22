@@ -5,7 +5,7 @@ const getLoadValue = R.pipe(
   R.split('load average:'),
   R.last,
   R.split(','),
-  R.head,
+  R.path(['1']),
   R.trim()
 )
 

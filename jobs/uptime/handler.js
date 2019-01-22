@@ -1,5 +1,5 @@
 // const process = require('process')
-const handler = require('./check')
+const check = require('./check')
 const { sendEmail } = require('../../service/email')
 const { users, content, subject } = require('./config')
 const moment = require('moment')
@@ -9,7 +9,7 @@ module.exports = (error, stdout) => {
     console.log(error)
     return
   }
-  const {overload, value} = handler(error, stdout)
+  const {overload, value} = check(error, stdout)
   console.log(moment().format() + ' ' + stdout)
   if(overload){
     const txt = content.replace('{value}', value)

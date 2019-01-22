@@ -30,8 +30,8 @@ describe('jobs', function() {
       assert.equal(overload, false)
     })
 
-    it.only('load average: 5, 0.06, 0.06结果为true', async () => {
-      const stdout = '  load average: 5, 0.06, 0.06'
+    it.only('load average: 5, 5, 0.06结果为true', async () => {
+      const stdout = '  load average: 5, 5, 0.06'
 
       const { overload } = check(null, stdout)
 
