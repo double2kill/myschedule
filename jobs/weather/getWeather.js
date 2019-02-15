@@ -6,7 +6,17 @@ module.exports = async (cityName) => {
   const cityId = cityInfo[0].split('~')[0]
   const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']})
   const page = await browser.newPage()
-  await page.goto(`http://www.weather.com.cn/weather/${cityId}.shtml`)
+  try {
+    // 可能会出现超时失败
+    await page.goto(`http://www.weather.com.cn/weather/${cityId}.shtml`, {
+      // 120s
+      timeout: 120000
+    })
+  } catch (error) {
+    await browser.close()
+    console.error(error)
+    throw error
+  }
 
   const dimensions = await page.evaluate(() => {
 
