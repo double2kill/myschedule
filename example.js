@@ -1,10 +1,10 @@
 const puppeteer = require('puppeteer');
-const mail = require('./mail');
+// const mail = require('./mail');
 
 (async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto('http://www.weather.com.cn/weather/101230811.shtml');
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  await page.goto('http://www.weather.com.cn/weather/101230811.shtml')
 
   const dimensions = await page.evaluate(() => {
 
@@ -40,8 +40,8 @@ const mail = require('./mail');
       city,
       data,
       statistics
-    };
-  });
+    }
+  })
 
   const text = `
     最高温: ${dimensions.statistics.max_temp}℃
@@ -55,16 +55,18 @@ const mail = require('./mail');
     subject: '10月10号天气信息',
     text: JSON.stringify(dimensions.statistics),
     html: text
-  };
+  }
 
-  mail.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return console.log(error);
-    }
-    console.log('Message sent: %s', info.messageId);
-  });
+  console.log(mailOptions)
+
+  // mail.sendMail(mailOptions, (error, info) => {
+  //   if (error) {
+  //     return console.log(error)
+  //   }
+  //   console.log('Message sent: %s', info.messageId)
+  // })
 
   console.log('close')
 
-  await browser.close();
-})();
+  await browser.close()
+})()
