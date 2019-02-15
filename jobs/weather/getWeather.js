@@ -4,7 +4,9 @@ const searchCity = require('../../service/searchCity')
 module.exports = async (cityName) => {
   const cityInfo = await searchCity(cityName)
   const cityId = cityInfo[0].split('~')[0]
-  const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']})
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+  })
   const page = await browser.newPage()
   try {
     // 可能会出现超时失败
