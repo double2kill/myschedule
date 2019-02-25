@@ -11,13 +11,11 @@ module.exports = async (cityName) => {
   try {
     // 可能会出现超时失败
     await page.goto(`http://www.weather.com.cn/weather/${cityId}.shtml`, {
-      // 120s
-      timeout: 120000
+      // 60s
+      timeout: 60000
     })
   } catch (error) {
-    await browser.close()
-    console.error(error)
-    throw error
+    console.error('TimeoutError: Navigation Timeout Exceeded: 60000ms exceeded')
   }
 
   const dimensions = await page.evaluate(() => {
