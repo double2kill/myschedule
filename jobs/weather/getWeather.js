@@ -21,7 +21,7 @@ module.exports = async (cityName) => {
   const dimensions = await page.evaluate(() => {
 
     const isValid = (value) => {
-      return value !== undefined && value !== null && value !== 'null'
+      return value !== undefined && value !== null && value !== 'null' && value !== ''
     }
 
     const {
