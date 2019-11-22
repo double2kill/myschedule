@@ -36,23 +36,28 @@ module.exports = async (cityName) => {
       }))
 
     const statistics = data
-      .filter(item => isValid(item.hour) && isValid(item.temp) && isValid(item.prec))
+      .filter(item => isValid(item.hour) && isValid(item.temp))
       .reduce((result, {
         temp,
-        prec
+        prec,
       }, index) => {
+        let correctPrec = prec;
+        if (!isValid(prec)) {
+          correctPrec = 0;
+        }
         return {
           max_temp: Math.max(+temp, result.max_temp),
           min_temp: Math.min(+temp, result.min_temp),
           total_prec: index === 0
             ? result.total_prec
-            : +(result.total_prec + +prec).toFixed(2)
-        }
+            : +(result.total_prec + +correctPrec).toFixed(2),
+        };
       }, {
         max_temp: -Infinity,
         min_temp: Infinity,
         total_prec: 0,
       })
+      ;
 
     return {
       od2,
