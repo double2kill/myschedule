@@ -5,12 +5,15 @@ module.exports = async (cityName) => {
   const cityInfo = await searchCity(cityName)
   const cityId = cityInfo[0].split('~')[0]
   const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+    ignoreDefaultArgs: ['--enable-automation']
   })
   const page = await browser.newPage()
   try {
+    const url = `http://www.weather.com.cn/weather/${cityId}.shtml`
+    console.log(url)
     // 可能会出现超时失败
-    await page.goto(`http://www.weather.com.cn/weather/${cityId}.shtml`, {
+    await page.goto(url, {
       // 60s
       timeout: 60000
     })
@@ -41,9 +44,9 @@ module.exports = async (cityName) => {
         temp,
         prec,
       }, index) => {
-        let correctPrec = prec;
+        let correctPrec = prec
         if (!isValid(prec)) {
-          correctPrec = 0;
+          correctPrec = 0
         }
         return {
           max_temp: Math.max(+temp, result.max_temp),
@@ -51,13 +54,13 @@ module.exports = async (cityName) => {
           total_prec: index === 0
             ? result.total_prec
             : +(result.total_prec + +correctPrec).toFixed(2),
-        };
+        }
       }, {
         max_temp: -Infinity,
         min_temp: Infinity,
         total_prec: 0,
       })
-      ;
+      
 
     return {
       od2,
