@@ -1,10 +1,30 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer')
 // const mail = require('./mail');
+var log4js = require('log4js')
+var logger = log4js.getLogger()
+logger.debug('Some debug messages');
 
 (async () => {
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()
-  await page.goto('http://www.weather.com.cn/weather/101230811.shtml')
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+    ignoreDefaultArgs: ['--enable-automation']
+  })
+  const page = (await browser.pages())[0]
+  const a = await page.evaluateOnNewDocument(() => {
+    Object.defineProperty(navigator, 'webdriver', {
+      get: () => undefined,
+    })
+  })
+  console.log(a)
+  await page
+    .goto('http://www.weather.com.cn/weather/101230811.shtml', {timeout: '3000',waitUntil: 'domcontentloaded'})
+    .catch(async (e)=> {
+      console.log(e)
+          
+      await page.screenshot({path: 'example.png'})
+
+      await browser.close()
+    })
 
   const dimensions = await page.evaluate(() => {
 

@@ -1,9 +1,12 @@
 const process = require('process')
 const { cityName, users } = require('./config')
 const getWeather = require('./getWeather')
+const log4js = require('log4js')
+const logger = log4js.getLogger('index')
+logger.level = 'info'
 
 const main = async (isTest) => {
-  console.log(isTest)
+  logger.info(`isTest: ${!!isTest}`)
   const {city, data, text, statistics} = await getWeather(cityName)
 
   if(!isTest) {

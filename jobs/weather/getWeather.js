@@ -1,5 +1,8 @@
 const puppeteer = require('puppeteer')
 const searchCity = require('../../service/searchCity')
+const log4js = require('log4js')
+const logger = log4js.getLogger('getWeather')
+logger.level = 'info'
 
 module.exports = async (cityName) => {
   const cityInfo = await searchCity(cityName)
@@ -8,17 +11,21 @@ module.exports = async (cityName) => {
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
     ignoreDefaultArgs: ['--enable-automation']
   })
-  const page = await browser.newPage()
+  const page = (await browser.pages())[0]
+  await page.evaluateOnNewDocument(() => {
+    Object.defineProperty(navigator, 'webdriver', {
+      get: () => undefined,
+    })
+  })
   try {
     const url = `http://www.weather.com.cn/weather/${cityId}.shtml`
-    console.log(url)
+    logger.info(url)
     // 可能会出现超时失败
-    await page.goto(url, {
-      // 60s
-      timeout: 60000
-    })
+    await page.goto(url)
   } catch (error) {
-    console.error('TimeoutError: Navigation Timeout Exceeded: 60000ms exceeded')
+    logger.error(error)
+    await page.screenshot({path: 'error.png'})
+    await browser.close()
   }
 
   const dimensions = await page.evaluate(() => {
@@ -75,6 +82,7 @@ module.exports = async (cityName) => {
   browser.close()
 
   const { statistics } = dimensions
+  logger.info(statistics)
 
   const text = `
   最高温: ${statistics.max_temp}℃
