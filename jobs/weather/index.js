@@ -1,16 +1,16 @@
 const process = require('process')
-const { cityName, users } = require('./config')
+const getWeatherJobs = require('./getWeatherJobs')
 const getWeather = require('./getWeather')
 const log4js = require('log4js')
 const logger = log4js.getLogger('index')
+const { weather: Model_weather, db } = require('../../model')
 logger.level = 'info'
 
-const main = async (isTest) => {
-  logger.info(`isTest: ${!!isTest}`)
+const getWeatherFromOneJob = async (weatherJob, isTest) => {
+  const { cityName, users } = weatherJob
   const {city, data, text, statistics} = await getWeather(cityName)
 
   if(!isTest) {
-    const { weather: Model_weather, db } = require('../../model')
     const moment = require('moment')
     const sendEmail = require('./sendEmail')
 
@@ -23,13 +23,21 @@ const main = async (isTest) => {
       statistics,
       users
     })
-    await db.close()
 
-    await sendEmail(users, text)
+    await sendEmail(users, text, city)
   } else {
-    console.log({city, data, text, statistics})
+    logger.info({city, data, text, statistics})
   }
-  return {city, data, text, statistics}
+  return
+}
+
+const main = async (isTest) => {
+  logger.info(`isTest: ${!!isTest}`)
+  const weatherJobs = await getWeatherJobs()
+  for(let weatherJob of weatherJobs ) {
+    await getWeatherFromOneJob(weatherJob, isTest)
+  }
+  await db.close()
 }
 
 if(process.argv[2]) {

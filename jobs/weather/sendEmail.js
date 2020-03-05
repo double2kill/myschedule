@@ -1,14 +1,14 @@
 const mail = require('./mail')
 const moment = require('moment')
 
-module.exports = async (users, text) => {
+module.exports = async (users, text, city) => {
   
   const date = moment().format('MM-DD')
 
   let mailOptions = {
     from: '刘晨<379563000@qq.com>',
     // to: '刘晨<379563000@qq.com>',
-    subject: `${date}天气信息`,
+    subject: `${city} - ${date}天气信息`,
     text: text,
     html: text
   }

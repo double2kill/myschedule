@@ -11,5 +11,6 @@ db.once('open', function() {
 
 module.exports = {
   weather: require('./weather')(mongoose),
+  weatherJobs: require('./weatherJobs')(mongoose),
   db
 }
