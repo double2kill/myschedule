@@ -35,7 +35,11 @@ const main = async (isTest) => {
   logger.info(`isTest: ${!!isTest}`)
   const weatherJobs = await getWeatherJobs()
   for(let weatherJob of weatherJobs ) {
-    await getWeatherFromOneJob(weatherJob, isTest)
+    try {
+      await getWeatherFromOneJob(weatherJob, isTest)
+    } catch (error) {
+      logger.error(error)
+    }
   }
   await db.close()
 }
