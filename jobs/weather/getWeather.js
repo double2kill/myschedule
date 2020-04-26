@@ -21,7 +21,10 @@ module.exports = async (cityName) => {
     const url = `http://www.weather.com.cn/weather/${cityId}.shtml`
     logger.info(url)
     // 可能会出现超时失败
-    await page.goto(url)
+    await page.goto(url, {
+      // 60s
+      timeout: 60000
+    })
   } catch (error) {
     logger.error(error)
     await page.screenshot({path: 'error.png'})
