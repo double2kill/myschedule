@@ -1,67 +1,51 @@
-const puppeteer = require('puppeteer')
+const jsdom = require('jsdom')
+const { JSDOM } = jsdom
 // const mail = require('./mail');
 var log4js = require('log4js')
 var logger = log4js.getLogger()
 logger.debug('Some debug messages');
 
 (async () => {
-  const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
-    ignoreDefaultArgs: ['--enable-automation']
+  const virtualConsole = new jsdom.VirtualConsole()
+  const dom = await JSDOM.fromURL('http://www.weather.com.cn/weather/101230811.shtml', {
+    runScripts: 'dangerously',
+    virtualConsole
   })
-  const page = (await browser.pages())[0]
-  const a = await page.evaluateOnNewDocument(() => {
-    Object.defineProperty(navigator, 'webdriver', {
-      get: () => undefined,
-    })
-  })
-  console.log(a)
-  await page
-    .goto('http://www.weather.com.cn/weather/101230811.shtml', {timeout: '3000',waitUntil: 'domcontentloaded'})
-    .catch(async (e)=> {
-      console.log(e)
-          
-      await page.screenshot({path: 'example.png'})
+  
 
-      await browser.close()
-    })
+  const {
+    od1: city,
+    od2
+  } = dom.window.observe24h_data.od
+  const data = od2
+    .slice(0, -1)
+    .map(item => ({
+      hour: item.od21,
+      temp: item.od22,
+      prec: item.od26
+    }))
 
-  const dimensions = await page.evaluate(() => {
-
-    const {
-      od1: city,
-      od2
-    } = observe24h_data.od
-    const data = od2
-      .slice(0, -1)
-      .map(item => ({
-        hour: item.od21,
-        temp: item.od22,
-        prec: item.od26
-      }))
-
-    const statistics = data.reduce((result, {
-      temp,
-      prec
-    }) => {
-      return {
-        max_temp: Math.max(temp, result.max_temp),
-        min_temp: Math.min(temp, result.min_temp),
-        total_prec: +(result.total_prec + +prec).toFixed(2)
-      }
-    }, {
-      max_temp: -Infinity,
-      min_temp: Infinity,
-      total_prec: 0,
-    })
-
-
+  const statistics = data.reduce((result, {
+    temp,
+    prec
+  }) => {
     return {
-      city,
-      data,
-      statistics
+      max_temp: Math.max(temp, result.max_temp),
+      min_temp: Math.min(temp, result.min_temp),
+      total_prec: +(result.total_prec + +prec).toFixed(2)
     }
+  }, {
+    max_temp: -Infinity,
+    min_temp: Infinity,
+    total_prec: 0,
   })
+
+
+  const dimensions = {
+    city,
+    data,
+    statistics
+  }
 
   const text = `
     最高温: ${dimensions.statistics.max_temp}℃
@@ -86,7 +70,4 @@ logger.debug('Some debug messages');
   //   console.log('Message sent: %s', info.messageId)
   // })
 
-  console.log('close')
-
-  await browser.close()
 })()
