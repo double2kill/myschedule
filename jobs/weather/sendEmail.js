@@ -3,12 +3,13 @@ const moment = require('moment')
 
 module.exports = async (users, text, city) => {
   
-  const date = moment().format('MM-DD')
+  const date = moment().format('YYYY-MM-DD')
+  const yesterdayDate = moment().subtract(1, 'day').format('YYYY-MM-DD')
 
   let mailOptions = {
     from: '刘晨<379563000@qq.com>',
     // to: '刘晨<379563000@qq.com>',
-    subject: `${city} - ${date}天气信息`,
+    subject: `${city} - ${yesterdayDate} - ${date}天气信息`,
     text: text,
     html: text
   }
