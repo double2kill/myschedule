@@ -7,17 +7,18 @@ const logger = log4js.getLogger('getWeather')
 logger.level = 'info'
 
 module.exports = async (cityName) => {
+  const city = cityName
   const cityInfo = await searchCity(cityName)
   const cityId = cityInfo[0].split('~')[0]
   const virtualConsole = new jsdom.VirtualConsole()
+
   const dom = await JSDOM.fromURL(`http://www.weather.com.cn/weather/${cityId}.shtml`, {
     runScripts: 'dangerously',
     virtualConsole
   })
-  
+
 
   const {
-    od1: city,
     od2
   } = dom.window.observe24h_data.od
   const data = od2
