@@ -3,14 +3,14 @@ const getWeather = require('./getWeather')
 const log4js = require('log4js')
 const logger = log4js.getLogger('index')
 const { weather: Model_weather, db } = require('../../model')
-const { getTodayWeather, getWeatherJobs } = require('./actions')
+const { getTodayWeather, getWeatherJobs, addWeatherJob, updateWeatherJobByCityName } = require('./actions')
 logger.level = 'info'
 
 const getWeatherFromOneJob = async (weatherJob, isTest) => {
-  const { cityName, users } = weatherJob
-  const {city, data, text, statistics} = await getWeather(cityName)
+  const { cityName, users, cityId } = weatherJob
+  const { city, data, text, statistics } = await getWeather(cityName, cityId)
 
-  if(!isTest) {
+  if (!isTest) {
     const moment = require('moment')
     const sendEmail = require('./sendEmail')
 
@@ -21,12 +21,12 @@ const getWeatherFromOneJob = async (weatherJob, isTest) => {
       city,
       data,
       statistics,
-      users
+      users,
     })
 
     await sendEmail(users, text, city)
   } else {
-    logger.info({city, data, text, statistics})
+    logger.info({ city, data, text, statistics })
   }
   return
 }
@@ -34,10 +34,10 @@ const getWeatherFromOneJob = async (weatherJob, isTest) => {
 const main = async (isTest) => {
   logger.info(`isTest: ${!!isTest}`)
   const weatherJobs = await getWeatherJobs()
-  for(let weatherJob of weatherJobs ) {
+  for (let weatherJob of weatherJobs) {
     const todayWeather = await getTodayWeather(weatherJob)
 
-    if(todayWeather) {
+    if (todayWeather) {
       continue
     }
 
@@ -50,7 +50,7 @@ const main = async (isTest) => {
   await db.close()
 }
 
-if(process.argv[2]) {
+if (process.argv[2]) {
   main(true)
 } else {
   main()

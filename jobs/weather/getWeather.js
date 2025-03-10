@@ -1,15 +1,12 @@
 const jsdom = require('jsdom')
 const { JSDOM } = jsdom
 
-const searchCity = require('../../service/searchCity')
 const log4js = require('log4js')
 const logger = log4js.getLogger('getWeather')
 logger.level = 'info'
 
-module.exports = async (cityName) => {
+module.exports = async (cityName, cityId) => {
   const city = cityName
-  const cityInfo = await searchCity(cityName)
-  const cityId = cityInfo[0].split('~')[0]
   const virtualConsole = new jsdom.VirtualConsole()
 
   const dom = await JSDOM.fromURL(`http://www.weather.com.cn/weather/${cityId}.shtml`, {
